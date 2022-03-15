@@ -1,0 +1,1 @@
+{"ast":null,"code":"import { Screen } from \"react-native-screens\";","map":{"version":3,"sources":["C:/Users/baile/hello-world/App.js"],"names":["Screen"],"mappings":"AAAA,SAASA,MAAT,QAAuB,sBAAvB","sourcesContent":["import { Screen } from \"react-native-screens\";"]},"metadata":{},"sourceType":"module"}
