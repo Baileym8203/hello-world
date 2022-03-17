@@ -1,40 +1,86 @@
 import React from "react";
 import { View, Text, StyleSheet, Platform, KeyboardAvoidingView } from "react-native";
 import { Bubble, GiftedChat } from "react-native-gifted-chat";
+import { Alert } from "react-native-web";
 
+const firebase = require("firebase");
+require("firebase/firestore");
 
 export default class Chat extends React.Component {
   constructor() {
     super();
 
-    this.state = { //  messages state
-      messages: [],
+    const firebaseConfig = {
+      apiKey: "AIzaSyBtt9vShgdL-46-bVaMjuUYgHY7WKQVuWs",
+      authDomain: "chat-ab583.firebaseapp.com",
+      projectId: "chat-ab583",
+      storageBucket: "chat-ab583.appspot.com",
+      messagingSenderId: "395742845331",
     };
+
+    if (!firebase.apps.length) {
+      firebase.initializeApp(firebaseConfig);
+    }
+
+    this.state = {
+      //  messages state
+      messages: [],
+      uid: [],
+    };
+  
+   this.referenceChatMessages = firebase.firestore().collection("messages");
+   if (this.referenceChatMessages === null/undefined) {
+   Alert.alert("The message has failed to send!")
+   }
+   this.unsubscribe = this.referenceChatMessages.onSnapshot(
+     this.onCollectionUpdate
+   );
+
+   onCollectionUpdate = (querySnapshot) => {
+   const messages = [];
+   // go through each document
+   querySnapshot.forEach((doc) => {
+     // get the QueryDocumentSnapshot's data
+     let data = doc.data();
+     messages.push({
+       _id: data._id,
+       text: data.text,
+       createdAt: data.createdAt.toDate(),
+       user: data.user,
+     });
+   });
   }
+
+  this.unsubscribeMessageUser = this.referenceMessageUser.onSnapshot(
+    this.onCollectionUpdate
+  );
+
+  addMessage = () => {
+  this.referenceChatMessages.add({
+  text: 'Teslist',
+  uid: this.state.uid,
+  })
+  }
+  
+}
+  
 
   componentDidMount() {
     let name = this.props.route.params.name; // name prop passed over from state from start.js
-    this.setState({
-      messages: [ // messages object list
-        {
-          _id: 1,
-          text: "hello Learner, I am the message you see now! just keep coding!",
-          createdAt: new Date(),
-          user: {
-            _id: 2,
-            name: "React Native",
-            avatar: "https://placeimg.com/140/140/any",
-          },
-        },
-        {
-          _id: 2,
-          text: `${name} has entered the chat`, // uses name prop to add the system message
-          createdAt: new Date(),
-          system: true,
-        },
-      ],
-    });
-  }
+    
+   this.authUnsubscribe = firebase.auth().onAuthStateChanged((user) => {
+     if (!user) {
+       firebase.auth().signInAnonymously();
+     }
+     this.setState({
+       uid: user.uid,
+       messages: [],
+     });
+     this.unsubscribe = this.referenceChatMessages
+       .orderBy("createdAt", "desc")
+       .onSnapshot(this.onCollectionUpdate);
+   });
+ }
 
   onSend(messages = []) {
     this.setState((previousState) => ({
@@ -42,7 +88,8 @@ export default class Chat extends React.Component {
     }));
   }
 
-  renderBubble(props) { // changes the right spawn texts AKA YOU sending them
+  renderBubble(props) {
+    // changes the right spawn texts AKA YOU sending them
     return (
       <Bubble
         {...props}
@@ -61,7 +108,8 @@ export default class Chat extends React.Component {
 
     this.props.navigation.setOptions({ title: name });
 
-    return ( // start of DOM return statement
+    return (
+      // start of DOM return statement
       <View
         style={{
           backgroundColor: color,
