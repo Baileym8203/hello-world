@@ -3,7 +3,6 @@ import { View, Text, Button, TextInput, StyleSheet, ImageBackground} from "react
 import { TouchableOpacity } from "react-native-gesture-handler";
 
 
-
 class Start extends React.Component {
   state = {
 name: "",
@@ -11,7 +10,8 @@ color: ""
   }
 
     render() {
-    return (
+      
+      return (
       <ImageBackground
         source={require("../img/Background.png")}
         resizeMode="cover"

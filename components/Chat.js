@@ -1,42 +1,30 @@
 import React from "react";
 import { View, Text, StyleSheet, Platform, KeyboardAvoidingView } from "react-native";
-import { Bubble, GiftedChat } from "react-native-gifted-chat";
-import { Alert } from "react-native-web";
-
-const firebase = require("firebase");
-require("firebase/firestore");
+import { Bubble, GiftedChat, Message, } from "react-native-gifted-chat";
+import { getDatabase, ref, push, set, Unsubscribe } from "@firebase/database";
 
 export default class Chat extends React.Component {
   constructor() {
     super();
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyBtt9vShgdL-46-bVaMjuUYgHY7WKQVuWs",
-      authDomain: "chat-ab583.firebaseapp.com",
-      projectId: "chat-ab583",
-      storageBucket: "chat-ab583.appspot.com",
-      messagingSenderId: "395742845331",
-    };
-
-    if (!firebase.apps.length) {
-      firebase.initializeApp(firebaseConfig);
+   
+    state = {
+    messages: []
     }
 
-    this.state = {
-      //  messages state
-      messages: [],
-      uid: [],
-    };
-  
-   this.referenceChatMessages = firebase.firestore().collection("messages");
-   if (this.referenceChatMessages === null/undefined) {
-   Alert.alert("The message has failed to send!")
-   }
-   this.unsubscribe = this.referenceChatMessages.onSnapshot(
-     this.onCollectionUpdate
-   );
+  const db = getDatabase();
+  const messagesRef = ref(db, "messages");
+  const query = messagesRef.orderBy("createdAt").limit(25);
+  }
 
-   onCollectionUpdate = (querySnapshot) => {
+
+
+  componentDidMount() {
+    let name = this.props.route.params.name; // name prop passed over from state from start.js
+    const db = getDatabase();
+    const messagesRef = ref(db, "messages");
+    this.Unsubscribe = messagesRef.onSnapshot(this.onCollectionUpdate)
+    
+    onCollectionUpdate = (querySnapshot) => {
    const messages = [];
    // go through each document
    querySnapshot.forEach((doc) => {
@@ -49,38 +37,13 @@ export default class Chat extends React.Component {
        user: data.user,
      });
    });
-  }
-
-  this.unsubscribeMessageUser = this.referenceMessageUser.onSnapshot(
-    this.onCollectionUpdate
-  );
-
-  addMessage = () => {
-  this.referenceChatMessages.add({
-  text: 'Teslist',
-  uid: this.state.uid,
-  })
-  }
-  
 }
-  
+  }
 
-  componentDidMount() {
-    let name = this.props.route.params.name; // name prop passed over from state from start.js
-    
-   this.authUnsubscribe = firebase.auth().onAuthStateChanged((user) => {
-     if (!user) {
-       firebase.auth().signInAnonymously();
-     }
-     this.setState({
-       uid: user.uid,
-       messages: [],
-     });
-     this.unsubscribe = this.referenceChatMessages
-       .orderBy("createdAt", "desc")
-       .onSnapshot(this.onCollectionUpdate);
-   });
- }
+  componentWillUnmount() {
+  this.Unsubscribe
+  }
+  
 
   onSend(messages = []) {
     this.setState((previousState) => ({
@@ -88,8 +51,7 @@ export default class Chat extends React.Component {
     }));
   }
 
-  renderBubble(props) {
-    // changes the right spawn texts AKA YOU sending them
+  renderBubble(props) { // changes the right spawn texts AKA YOU sending them
     return (
       <Bubble
         {...props}
@@ -110,6 +72,7 @@ export default class Chat extends React.Component {
 
     return (
       // start of DOM return statement
+
       <View
         style={{
           backgroundColor: color,

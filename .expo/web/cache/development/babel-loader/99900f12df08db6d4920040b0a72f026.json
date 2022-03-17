@@ -1,0 +1,1 @@
+{"ast":null,"code":"import { authentication } from \"./components/firebase\";","map":{"version":3,"sources":["C:/Users/baile/Documents/hello-world/components/Login.js"],"names":["authentication"],"mappings":"AAEA,SAASA,cAAT","sourcesContent":["\r\n\r\nimport { authentication } from \"./components/firebase\";"]},"metadata":{},"sourceType":"module"}
