@@ -26,12 +26,12 @@ const firebaseConfig = {
   storageBucket: "chat-ab583.appspot.com",
   messagingSenderId: "395742845331",
   appId: "1:395742845331:web:93505ccec2cd53ddaa7066",
-  measurementId: "G-W0QN4M0YVZ",
+  measurementId: "G-W0QN4M0YVZ"
 };
 
 export default class Chat extends Component {
   constructor(props) {
-    super(props);
+    super();
     this.state = {
       messages: [],
       uid: 0,
@@ -256,14 +256,14 @@ export default class Chat extends Component {
 
   render() {
     // Set the background color selected from start screen
-    const { color } = this.props.route.params;
+    const { bgColor } = this.props.route.params;
     return (
       <View
         style={{
           flex: 1,
           alignItems: "center",
           justifyContent: "center",
-          backgroundColor: color ? color : "#fff",
+          backgroundColor: bgColor ? bgColor : "#fff",
         }}
       >
         <View style={styles.giftedChat}>
