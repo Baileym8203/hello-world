@@ -278,7 +278,7 @@ export default class Chat extends Component {
             user={{
               _id: this.state.user._id,
               name: this.state.name,
-              avatar: this.state.user.avatar,
+              avatar: this.state.user.avatar
             }}
           />
           {Platform.OS === "android" ? (
