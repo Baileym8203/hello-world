@@ -21,6 +21,9 @@ Download and install the code (see Installation for instruction).
 Install Expo globally npm install --global expo-cli.
 To start the app, run expo start or npm start.
 To run the app on a device, install an emulator or expo go on your smartphone
+<<<<<<< HEAD
  
 
+=======
+>>>>>>> 121d8e32de1c8eedd7d79adcae98fedb853dc5f8
  
